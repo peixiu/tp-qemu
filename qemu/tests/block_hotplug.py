@@ -1,6 +1,7 @@
 import logging
 import re
 import random
+import time
 
 from virttest import data_dir
 from virttest import storage
@@ -64,6 +65,7 @@ def run(test, params, env):
         """
         disks_before_unplug = find_disk(vm, get_disk_cmd)
         device.unplug(vm.monitor)
+        time.sleep(5)
         device.verify_unplug("", vm.monitor)
         unplug_status = utils_misc.wait_for(lambda: len(get_new_disk(find_disk
                                             (vm, get_disk_cmd), disks_before_unplug)) != 0, pause)
@@ -228,6 +230,8 @@ def run(test, params, env):
                     test.fail("Failed to unplug disks '%s'" % device.get_param("id"))
                 device_list.remove(device)
             controller.unplug(vm.monitor)
+            time.sleep(5)
+            controller.verify_unplug("", vm.monitor)
         for device in device_list:
             unplug_status = unplug_device(vm, get_disk_cmd, device)
             if not unplug_status:
